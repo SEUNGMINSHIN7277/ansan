@@ -1,0 +1,207 @@
+<title>모두의 사이렌 — 대표 화면</title>
+<style>
+  :root{
+    --ground:#0B111A; --panel:#111B27; --panel-2:#18232F; --panel-3:#1F2C3A;
+    --ink:#EAF0F7; --dim:#94A6BB; --faint:#5D6E83;
+    --line:#243039; --line-2:#324150;
+    --amber:#FFB130; --amber-ink:#FFC768; --amber-bg:#FFB13018;
+    --reach:#2ED9A6; --reach-ink:#5CE6BE; --reach-bg:#2ED9A616;
+    --crit:#FF5C6C; --crit-bg:#FF5C6C18; --crit-ink:#FF8B96;
+    --shadow:0 30px 80px -30px #00060cdd;
+    --mono:'SF Mono','JetBrains Mono','D2Coding',ui-monospace,'Cascadia Code',Consolas,monospace;
+    --kr:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  }
+  :root[data-theme="light"]{
+    --ground:#E9EEF4; --panel:#FFFFFF; --panel-2:#F3F7FC; --panel-3:#E9EFF6;
+    --ink:#111C28; --dim:#556579; --faint:#8494A6; --line:#E1E8F0; --line-2:#CBD7E4;
+    --amber:#B96700; --amber-ink:#9A5600; --amber-bg:#B9670012;
+    --reach:#0A9068; --reach-ink:#08805C; --reach-bg:#0A906812;
+    --crit:#D62F42; --crit-bg:#D62F4212; --crit-ink:#B01F30;
+    --shadow:0 30px 70px -34px #35486166;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --ground:#E9EEF4; --panel:#FFFFFF; --panel-2:#F3F7FC; --panel-3:#E9EFF6;
+      --ink:#111C28; --dim:#556579; --faint:#8494A6; --line:#E1E8F0; --line-2:#CBD7E4;
+      --amber:#B96700; --amber-ink:#9A5600; --amber-bg:#B9670012;
+      --reach:#0A9068; --reach-ink:#08805C; --reach-bg:#0A906812;
+      --crit:#D62F42; --crit-bg:#D62F4212; --crit-ink:#B01F30;
+      --shadow:0 30px 70px -34px #35486166;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0}
+  .wrap{background:
+      radial-gradient(120% 80% at 15% 0%, #14243312, transparent 60%),
+      var(--ground); color:var(--ink); font-family:var(--kr); -webkit-font-smoothing:antialiased;
+      min-height:100vh; display:flex; align-items:center; justify-content:center; padding:40px 24px}
+  .stage{width:100%; max-width:940px}
+  .kick{display:flex; align-items:center; gap:12px; margin-bottom:16px; flex-wrap:wrap}
+  .kick .b{font-family:var(--mono); font-size:11.5px; letter-spacing:.06em; color:var(--dim); border:1px solid var(--line-2); border-radius:100px; padding:6px 13px; display:flex; align-items:center; gap:8px}
+  .kick .b .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px var(--amber-bg)}
+  .kick .t{font-size:14px; color:var(--dim)}
+  .kick .t b{color:var(--reach-ink); font-weight:700}
+
+  /* app window */
+  .app{background:var(--panel); border:1px solid var(--line-2); border-radius:18px; overflow:hidden; box-shadow:var(--shadow)}
+  .bar{display:flex; align-items:center; gap:12px; padding:12px 18px; background:var(--panel-2); border-bottom:1px solid var(--line)}
+  .bar .dots{display:flex; gap:7px}.bar .dots i{width:11px;height:11px;border-radius:50%;background:var(--line-2);display:block}
+  .bar .addr{font-family:var(--mono); font-size:12px; color:var(--faint); background:var(--panel); border:1px solid var(--line); border-radius:8px; padding:5px 14px}
+  .bar .live{margin-left:auto; font-family:var(--mono); font-size:11.5px; color:var(--reach-ink); display:flex; align-items:center; gap:7px}
+  .bar .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--reach);box-shadow:0 0 0 3px var(--reach-bg); animation:pulse 2.4s ease-in-out infinite}
+  @keyframes pulse{0%,100%{opacity:1}50%{opacity:.4}}
+  @media (prefers-reduced-motion:reduce){.bar .live::before{animation:none}}
+
+  .head{display:flex; align-items:center; justify-content:space-between; gap:14px; padding:18px 22px 4px; flex-wrap:wrap}
+  .head .ttl{font-size:17px; font-weight:850; letter-spacing:-.02em}
+  .head .ttl .id{font-family:var(--mono); font-size:12px; color:var(--faint); font-weight:400; margin-left:8px}
+  .head .rd{font-family:var(--mono); font-size:11.5px; color:var(--dim)}
+
+  .body{display:grid; grid-template-columns:1fr 1.2fr; gap:16px; padding:16px 22px 24px}
+
+  .card{background:var(--panel-2); border:1px solid var(--line); border-radius:14px; padding:18px}
+  .card .h{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--faint); text-transform:uppercase; margin-bottom:14px; display:flex; justify-content:space-between; align-items:center}
+  .pill{font-family:var(--mono); font-size:10.5px; padding:3px 9px; border-radius:20px; letter-spacing:.03em; border:1px solid}
+  .pill.ok{color:var(--reach-ink); background:var(--reach-bg); border-color:var(--reach)}
+
+  /* KPI row */
+  .kpis{display:flex; gap:10px; margin-bottom:16px}
+  .kpi{flex:1; background:var(--panel); border:1px solid var(--line); border-radius:12px; padding:13px 14px}
+  .kpi .l{font-family:var(--mono); font-size:10px; color:var(--faint); text-transform:uppercase; letter-spacing:.07em}
+  .kpi .v{font-family:var(--mono); font-weight:750; font-size:23px; margin-top:5px; font-variant-numeric:tabular-nums; letter-spacing:-.01em}
+  .kpi .v.g{color:var(--reach-ink)} .kpi .v small{font-size:12px; color:var(--dim); font-weight:400}
+
+  /* gauge */
+  .gauge{display:flex; align-items:center; gap:20px}
+  .ring{--v:96; width:132px;height:132px;border-radius:50%; flex:none; position:relative; display:grid; place-items:center;
+    background:conic-gradient(var(--reach) calc(var(--v)*1%), var(--line) 0)}
+  .ring::before{content:"";position:absolute; inset:13px; border-radius:50%; background:var(--panel-2)}
+  .ring .c{position:relative; text-align:center}
+  .ring .c .n{font-family:var(--mono); font-weight:800; font-size:34px; font-variant-numeric:tabular-nums; line-height:1; color:var(--reach-ink)}
+  .ring .c .n small{font-size:15px; color:var(--dim)}
+  .ring .c .k{font-family:var(--mono); font-size:10px; color:var(--faint); text-transform:uppercase; letter-spacing:.1em; margin-top:5px}
+  .gl b{font-size:15px; font-weight:750; display:block; margin-bottom:5px}
+  .gl p{margin:0; font-size:13px; color:var(--dim); line-height:1.6}
+  .delta{font-family:var(--mono); font-size:12px; color:var(--reach-ink); margin-top:8px; display:inline-flex; align-items:center; gap:5px}
+
+  /* map */
+  .mapwrap{position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line); min-height:238px}
+  canvas.hex{display:block; width:100%; height:100%}
+  .mapleg{position:absolute; left:12px; bottom:12px; display:flex; gap:13px; font-family:var(--mono); font-size:10.5px; color:var(--dim); background:#0b111ab0; padding:6px 11px; border-radius:8px; border:1px solid var(--line)}
+  :root[data-theme="light"] .mapleg{background:#ffffffcc}
+  .mapleg span{display:inline-flex;align-items:center;gap:6px} .sw{width:10px;height:10px;border-radius:3px}
+  .tag{position:absolute; font-family:var(--mono); font-size:11px; color:var(--ink); background:#0b111ad8; border:1px solid var(--line-2); padding:2px 7px; border-radius:6px}
+  :root[data-theme="light"] .tag{background:#ffffffe8}
+
+  .impr{margin-top:14px; background:var(--reach-bg); border:1px solid var(--reach); border-radius:11px; padding:13px 15px; font-size:13px; color:var(--ink); display:flex; gap:11px; align-items:flex-start; line-height:1.6}
+  .impr .ic{color:var(--reach); font-weight:800; font-size:15px}
+  .impr b{color:var(--reach-ink)}
+
+  .cap{text-align:center; margin-top:20px; color:var(--faint); font-family:var(--mono); font-size:11.5px}
+
+  @media (max-width:760px){
+    .body{grid-template-columns:1fr}
+    .gauge{gap:16px}
+  }
+</style>
+
+<div class="wrap">
+  <div class="stage">
+    <div class="kick">
+      <span class="b"><span class="dot"></span>모두의 사이렌 관제 콘솔</span>
+      <span class="t">지금까지는 <b style="color:var(--amber-ink)">‘발송했다’</b>로 끝났습니다. 이 화면은 <b>‘몇 %에게 닿았는가’</b>를 측정합니다.</span>
+    </div>
+
+    <div class="app">
+      <div class="bar">
+        <span class="dots"><i></i><i></i><i></i></span>
+        <span class="addr">console.siren.ansan.go.kr / result</span>
+        <span class="live">송출 완료 · 도달률 측정중</span>
+      </div>
+
+      <div class="head">
+        <div class="ttl">발령 결과 — 안산천 호우·침수 경보 <span class="id">#A-2231</span></div>
+        <div class="rd">발령 14:03:12 · 측정 갱신 14:07:40</div>
+      </div>
+
+      <div class="body">
+        <!-- left: metrics -->
+        <div class="card">
+          <div class="h">성과 지표 <span class="pill ok">실측</span></div>
+          <div class="kpis">
+            <div class="kpi"><div class="l">TTR 도달시간</div><div class="v g">4:32<small> 분</small></div></div>
+            <div class="kpi"><div class="l">노출 인구</div><div class="v">12,400<small> 명</small></div></div>
+          </div>
+          <div class="gauge">
+            <div class="ring" style="--v:96"><div class="c"><div class="n">96<small>%</small></div><div class="k">Reach</div></div></div>
+            <div class="gl">
+              <b>도달률 96%</b>
+              <p>위험에 노출된 시민 중 이해 가능한 형태로 안내를 받은 비율.</p>
+              <span class="delta">▲ 93% → 96% · 미도달 골목 재송출</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- right: gap map -->
+        <div class="card">
+          <div class="h">언어·지역 도달 공백 지도</div>
+          <div class="mapwrap">
+            <canvas class="hex" data-mode="gap"></canvas>
+            <span class="tag" style="left:31%;top:40%">원곡동</span>
+            <span class="tag" style="left:44%;top:58%">선부동</span>
+            <div class="mapleg">
+              <span><span class="sw" style="background:var(--reach)"></span>도달</span>
+              <span><span class="sw" style="background:var(--amber)"></span>부분</span>
+              <span><span class="sw" style="background:var(--crit)"></span>공백</span>
+            </div>
+          </div>
+          <div class="impr"><span class="ic">↗</span><span><b>개선 제안</b> — 선부동 ○○길 러시아어 상점 노드 2개소를 추가하면 해당 골목 도달률이 <b>+2%p</b> 오를 것으로 예측됩니다.</span></div>
+        </div>
+      </div>
+    </div>
+
+    <div class="cap">모두의 사이렌 — 재난문자의 ‘발송’을 ‘도달’로 바꾸는 AI 안전도시, 안산 · 화면은 기획 설명용 시안</div>
+  </div>
+</div>
+
+<script>
+(function(){
+  function css(v){return getComputedStyle(document.documentElement).getPropertyValue(v).trim();}
+  var cv=document.querySelector('canvas.hex'); if(!cv) return;
+  function paint(){
+    var r=cv.getBoundingClientRect(); if(r.width<2) return;
+    var dpr=Math.min(devicePixelRatio||1,2); cv.width=r.width*dpr; cv.height=r.height*dpr;
+    var x=cv.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
+    var W=r.width,H=r.height;
+    var crit=css('--crit'),amber=css('--amber'),reach=css('--reach'),faint=css('--faint'),panel=css('--panel-3');
+    x.fillStyle=panel; x.fillRect(0,0,W,H);
+    var R=Math.max(16,Math.min(26,W/13)), hw=Math.sqrt(3)*R, vh=1.5*R;
+    var src={x:W*0.36,y:H*0.5};
+    function hex(cx,cy,rad,fill,a,stroke){
+      x.beginPath();
+      for(var i=0;i<6;i++){var ang=Math.PI/180*(60*i-30);var px=cx+rad*Math.cos(ang),py=cy+rad*Math.sin(ang);i?x.lineTo(px,py):x.moveTo(px,py);}
+      x.closePath(); x.globalAlpha=a; x.fillStyle=fill; x.fill();
+      if(stroke){x.globalAlpha=Math.min(1,a+0.35);x.strokeStyle=stroke;x.lineWidth=1;x.stroke();}
+      x.globalAlpha=1;
+    }
+    var col=0;
+    for(var cy=vh*0.35; cy<H+R; cy+=vh){
+      var off=(col%2)?hw/2:0; col++;
+      for(var cx=hw*0.35+off; cx<W+R; cx+=hw){
+        var d=Math.hypot(cx-src.x,cy-src.y)/Math.max(W,H);
+        var fill=reach,a=0.5;
+        if(d<0.34){ var k=Math.sin(cx*0.85)+Math.cos(cy*1.25);
+          fill = k<-1.15?crit:(k<-0.15?amber:reach);
+          a = fill===reach?0.62:(fill===amber?0.6:0.78);
+        } else { fill=reach; a=0.42; }
+        hex(cx,cy,R-1.6,fill,a,fill===crit?crit:null);
+      }
+    }
+    x.beginPath();x.arc(src.x,src.y,5,0,Math.PI*2);x.fillStyle=reach;x.fill();
+    x.globalAlpha=.2;x.beginPath();x.arc(src.x,src.y,13,0,Math.PI*2);x.fillStyle=reach;x.fill();x.globalAlpha=1;
+  }
+  paint();
+  window.addEventListener('resize',function(){clearTimeout(cv._t);cv._t=setTimeout(paint,150);});
+  var mm=window.matchMedia('(prefers-color-scheme: dark)'); if(mm.addEventListener)mm.addEventListener('change',paint);
+})();
+</script>
