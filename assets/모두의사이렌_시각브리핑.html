@@ -1,0 +1,550 @@
+<title>모두의 사이렌 — 시각 브리핑</title>
+<style>
+  :root{
+    --ground:#0D141E; --panel:#141F2C; --panel-2:#1B2735; --raise:#22304180;
+    --ink:#E9EFF7; --dim:#93A5BA; --faint:#63748A;
+    --line:#27343F; --line-2:#324150;
+    --amber:#FFB130; --amber-ink:#FFC768; --amber-bg:#FFB1301A;
+    --reach:#2ED9A6; --reach-ink:#57E4BB; --reach-bg:#2ED9A61A;
+    --crit:#FF5C6C; --crit-bg:#FF5C6C1A;
+    --shadow:0 18px 44px -20px #00060c9c;
+    --maxw:1020px;
+    --mono:'SF Mono','JetBrains Mono','D2Coding',ui-monospace,'Cascadia Code',Consolas,monospace;
+    --kr:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  }
+  @media (prefers-color-scheme: light){
+    :root{
+      --ground:#EDF1F7; --panel:#FFFFFF; --panel-2:#F4F8FC; --raise:#FFFFFF;
+      --ink:#111C28; --dim:#556579; --faint:#8494A6;
+      --line:#DEE6F0; --line-2:#CBD6E4;
+      --amber:#C46E00; --amber-ink:#A85E00; --amber-bg:#C46E0014;
+      --reach:#0C9C72; --reach-ink:#0A8A65; --reach-bg:#0C9C7214;
+      --crit:#DB3346; --crit-bg:#DB33461A;
+      --shadow:0 18px 40px -24px #33445d55;
+    }
+  }
+  :root[data-theme="dark"]{
+    --ground:#0D141E; --panel:#141F2C; --panel-2:#1B2735; --raise:#22304180;
+    --ink:#E9EFF7; --dim:#93A5BA; --faint:#63748A; --line:#27343F; --line-2:#324150;
+    --amber:#FFB130; --amber-ink:#FFC768; --amber-bg:#FFB1301A;
+    --reach:#2ED9A6; --reach-ink:#57E4BB; --reach-bg:#2ED9A61A;
+    --crit:#FF5C6C; --crit-bg:#FF5C6C1A; --shadow:0 18px 44px -20px #00060c9c;
+  }
+  :root[data-theme="light"]{
+    --ground:#EDF1F7; --panel:#FFFFFF; --panel-2:#F4F8FC; --raise:#FFFFFF;
+    --ink:#111C28; --dim:#556579; --faint:#8494A6; --line:#DEE6F0; --line-2:#CBD6E4;
+    --amber:#C46E00; --amber-ink:#A85E00; --amber-bg:#C46E0014;
+    --reach:#0C9C72; --reach-ink:#0A8A65; --reach-bg:#0C9C7214;
+    --crit:#DB3346; --crit-bg:#DB33461A; --shadow:0 18px 40px -24px #33445d55;
+  }
+
+  *{box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{margin:0}
+  .wrap{
+    background:var(--ground); color:var(--ink);
+    font-family:var(--kr); line-height:1.72;
+    -webkit-font-smoothing:antialiased; text-rendering:optimizeLegibility;
+    overflow-x:hidden;
+  }
+  .col{max-width:var(--maxw); margin:0 auto; padding:0 24px}
+  section{padding:76px 0; border-top:1px solid var(--line)}
+  h2,h3,p{margin:0}
+  .eyebrow{
+    font-family:var(--mono); font-size:12px; letter-spacing:.14em;
+    color:var(--amber-ink); text-transform:uppercase; display:flex; gap:10px; align-items:center;
+  }
+  .eyebrow .n{color:var(--faint)}
+  .lead{font-size:clamp(24px,3.4vw,36px); font-weight:800; letter-spacing:-.02em; line-height:1.28; text-wrap:balance}
+  .sub{color:var(--dim); font-size:17px; max-width:64ch; margin-top:14px}
+  .tnum{font-variant-numeric:tabular-nums}
+
+  /* ---------- HERO ---------- */
+  .hero{position:relative; border-top:none; padding:0; min-height:clamp(560px,82vh,760px); display:flex; align-items:center; overflow:hidden}
+  #sig{position:absolute; inset:0; width:100%; height:100%; display:block}
+  .hero-veil{position:absolute; inset:0; background:
+     radial-gradient(120% 90% at 18% 40%, transparent 30%, var(--ground) 82%),
+     linear-gradient(180deg, transparent 55%, var(--ground) 100%);
+     pointer-events:none}
+  .hero .col{position:relative; z-index:2; width:100%}
+  .badge{
+    display:inline-flex; align-items:center; gap:9px; font-family:var(--mono);
+    font-size:12.5px; letter-spacing:.06em; color:var(--dim);
+    border:1px solid var(--line-2); border-radius:100px; padding:7px 15px; background:#0d141e55; backdrop-filter:blur(4px);
+  }
+  .badge .dot{width:7px;height:7px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 4px var(--amber-bg)}
+  .hero h1{
+    font-size:clamp(46px,9vw,104px); line-height:.98; letter-spacing:-.045em; font-weight:850;
+    margin:22px 0 0; text-wrap:balance;
+  }
+  .hero h1 .g{background:linear-gradient(96deg,var(--amber),var(--reach)); -webkit-background-clip:text; background-clip:text; color:transparent}
+  .hero .tag{font-size:clamp(17px,2.3vw,23px); color:var(--ink); font-weight:600; margin-top:20px; letter-spacing:-.01em}
+  .hero .tag b{color:var(--amber-ink)} .hero .tag i{font-style:normal;color:var(--reach-ink)}
+  .hero .fine{color:var(--dim); margin-top:16px; max-width:56ch; font-size:15.5px}
+
+  /* thesis chips */
+  .flow{display:flex; align-items:center; gap:14px; flex-wrap:wrap; margin-top:30px}
+  .chip{display:flex; flex-direction:column; gap:2px; padding:12px 18px; border-radius:13px; border:1px solid var(--line-2); background:var(--panel)}
+  .chip .k{font-family:var(--mono); font-size:11px; letter-spacing:.12em; color:var(--faint)}
+  .chip .v{font-size:18px; font-weight:800; letter-spacing:-.01em}
+  .chip.send .v{color:var(--amber-ink)} .chip.reach .v{color:var(--reach-ink)}
+  .arrow{font-family:var(--mono); color:var(--faint); font-size:22px}
+
+  /* ---------- generic panel head ---------- */
+  .head{margin-bottom:34px}
+  .head .lead{margin-top:14px}
+
+  /* ---------- stat band ---------- */
+  .stats{display:grid; grid-template-columns:repeat(6,1fr); gap:14px}
+  .stat{grid-column:span 2; background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:22px 20px; position:relative; overflow:hidden}
+  .stat::before{content:""; position:absolute; left:0; top:0; width:3px; height:100%; background:var(--amber)}
+  .stat .num{font-size:clamp(34px,4.6vw,46px); font-weight:850; letter-spacing:-.03em; line-height:1; color:var(--ink)}
+  .stat .num small{font-size:.5em; font-weight:800; color:var(--dim); margin-left:3px}
+  .stat .lbl{color:var(--dim); font-size:14.5px; margin-top:10px}
+  .stat.hot::before{background:var(--crit)} .stat.hot .num{color:var(--crit)}
+  .stat.rc::before{background:var(--reach)}
+
+  /* ---------- problem grid ---------- */
+  .grid6{display:grid; grid-template-columns:repeat(3,1fr); gap:14px}
+  .fail{background:var(--panel); border:1px solid var(--line); border-radius:15px; padding:22px; display:flex; flex-direction:column; gap:11px}
+  .fail .tp{display:flex; align-items:center; gap:11px}
+  .fail .id{font-family:var(--mono); font-size:12px; color:var(--crit); border:1px solid var(--crit); border-radius:6px; padding:2px 7px; letter-spacing:.05em}
+  .fail h3{font-size:17.5px; font-weight:800; letter-spacing:-.01em}
+  .fail p{color:var(--dim); font-size:14.5px}
+  .fail .case{margin-top:auto; font-size:13px; color:var(--ink); background:var(--crit-bg); border-left:2px solid var(--crit); padding:9px 12px; border-radius:0 8px 8px 0}
+  .fail .case b{color:var(--crit); font-variant-numeric:tabular-nums}
+
+  /* ---------- pipeline ---------- */
+  .pipe{display:grid; grid-template-columns:repeat(6,1fr); gap:0; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--panel)}
+  .step{padding:22px 18px 20px; border-right:1px solid var(--line); position:relative; display:flex; flex-direction:column; gap:9px; min-height:210px}
+  .step:last-child{border-right:none}
+  .step .no{font-family:var(--mono); font-size:12px; color:var(--faint); letter-spacing:.1em}
+  .step h3{font-size:18px; font-weight:850; letter-spacing:-.01em}
+  .step p{font-size:13.5px; color:var(--dim); line-height:1.6}
+  .step .tags{margin-top:auto; display:flex; flex-wrap:wrap; gap:5px}
+  .step .t{font-family:var(--mono); font-size:10.5px; letter-spacing:.03em; padding:3px 7px; border-radius:5px; background:var(--panel-2); color:var(--amber-ink); border:1px solid var(--line)}
+  .step .gate{font-family:var(--mono); font-size:10.5px; color:var(--reach-ink); display:flex; align-items:center; gap:5px}
+  .step .gate::before{content:""; width:6px;height:6px;border-radius:50%;background:var(--reach)}
+  .step .bar{position:absolute; left:0; bottom:0; height:3px; width:100%; background:linear-gradient(90deg,var(--amber),var(--reach)); opacity:.0; transition:opacity .5s}
+  .step.lit .bar{opacity:1}
+
+  /* ---------- timeline ---------- */
+  .tl-wrap{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+  .tl{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px 22px}
+  .tl.bad{border-color:#5a2a30}
+  .tl.good{border-color:#1f5a4a}
+  .tl .cap{display:flex; align-items:center; justify-content:space-between; margin-bottom:20px}
+  .tl .cap .who{font-size:15px; font-weight:800; letter-spacing:-.01em}
+  .tl.bad .who{color:var(--crit)} .tl.good .who{color:var(--reach-ink)}
+  .tl .cap .res{font-family:var(--mono); font-size:12px; padding:4px 10px; border-radius:7px}
+  .tl.bad .res{color:var(--crit); background:var(--crit-bg)} .tl.good .res{color:var(--reach-ink); background:var(--reach-bg)}
+  .ev{display:grid; grid-template-columns:64px 1fr; gap:14px; position:relative; padding-bottom:18px}
+  .ev:last-child{padding-bottom:0}
+  .ev .rail{position:relative; display:flex; justify-content:center}
+  .ev .rail::before{content:""; position:absolute; top:16px; bottom:-6px; width:2px; background:var(--line-2)}
+  .ev:last-child .rail::before{display:none}
+  .ev .tk{font-family:var(--mono); font-size:11.5px; color:var(--dim); text-align:right; padding-top:2px; letter-spacing:-.02em}
+  .ev .pt{position:absolute; top:5px; width:11px; height:11px; border-radius:50%; background:var(--ground); border:2px solid var(--faint)}
+  .tl.bad .ev.k .pt{border-color:var(--crit); background:var(--crit)}
+  .tl.good .ev .pt{border-color:var(--reach); background:var(--reach)}
+  .ev .bd h4{margin:0; font-size:14.5px; font-weight:700; letter-spacing:-.01em}
+  .ev .bd p{font-size:13px; color:var(--dim); margin-top:2px}
+  .ev.k .bd h4{font-size:15.5px}
+  .tl-note{margin-top:18px; text-align:center}
+  .save{display:inline-flex; align-items:baseline; gap:10px; font-family:var(--mono); background:var(--reach-bg); color:var(--reach-ink); border:1px solid var(--reach); border-radius:12px; padding:14px 22px}
+  .save b{font-size:30px; font-weight:850; letter-spacing:-.02em; color:var(--reach)}
+
+  /* ---------- metrics ---------- */
+  .mx{display:grid; grid-template-columns:1fr 1fr; gap:18px}
+  .metric{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:26px 24px}
+  .metric .mh{display:flex; align-items:center; gap:10px; margin-bottom:22px}
+  .metric .mh .code{font-family:var(--mono); font-size:12px; color:var(--faint); letter-spacing:.08em}
+  .metric .mh .mt{font-size:17px; font-weight:800; letter-spacing:-.01em}
+  .ba{display:flex; flex-direction:column; gap:16px}
+  .ba .row{display:grid; grid-template-columns:70px 1fr auto; gap:14px; align-items:center}
+  .ba .tag{font-family:var(--mono); font-size:12px; color:var(--dim)}
+  .ba .track{height:34px; border-radius:9px; background:var(--panel-2); overflow:hidden; position:relative; border:1px solid var(--line)}
+  .ba .fill{height:100%; border-radius:8px 0 0 8px; width:0; transition:width 1.1s cubic-bezier(.22,.9,.3,1)}
+  .ba .fill.bad{background:linear-gradient(90deg,#8a3a44,var(--crit))}
+  .ba .fill.warn{background:linear-gradient(90deg,#8a6a20,var(--amber))}
+  .ba .fill.ok{background:linear-gradient(90deg,#1c7a5e,var(--reach))}
+  .ba .val{font-family:var(--mono); font-weight:700; font-size:16px; font-variant-numeric:tabular-nums; min-width:74px; text-align:right}
+  .ba .row.b .val{color:var(--crit)} .ba .row.w .val{color:var(--amber-ink)} .ba .row.g .val{color:var(--reach-ink)}
+  .metric .foot{margin-top:20px; font-size:13.5px; color:var(--dim); border-top:1px dashed var(--line-2); padding-top:16px}
+
+  /* ---------- channels ---------- */
+  .ch-wrap{display:grid; grid-template-columns:1fr 1.35fr; gap:18px; align-items:stretch}
+  .pull{background:var(--panel); border:1px solid var(--line); border-radius:16px; padding:24px}
+  .pull .t{font-size:16px; font-weight:800; margin-bottom:6px}
+  .pull .d{color:var(--dim); font-size:14px; margin-bottom:18px}
+  .pull .lang{display:flex; gap:6px; flex-wrap:wrap}
+  .pull .lang span{font-family:var(--mono); font-size:12px; padding:5px 9px; border-radius:6px; border:1px solid var(--line); color:var(--dim)}
+  .pull .lang span.no{color:var(--crit); border-color:var(--crit); text-decoration:line-through; opacity:.9}
+  .push{background:
+      radial-gradient(90% 130% at 8% 50%, var(--amber-bg), transparent 60%),
+      var(--panel); border:1px solid var(--line-2); border-radius:16px; padding:24px; position:relative}
+  .push .t{font-size:16px; font-weight:800; margin-bottom:6px; color:var(--reach-ink)}
+  .push .d{color:var(--dim); font-size:14px; margin-bottom:18px}
+  .nodes{display:grid; grid-template-columns:repeat(3,1fr); gap:10px}
+  .node{background:var(--panel-2); border:1px solid var(--line); border-radius:12px; padding:14px 12px; text-align:center}
+  .node .ic{font-size:20px; line-height:1}
+  .node .nm{font-size:13.5px; font-weight:700; margin-top:8px}
+  .node .ds{font-size:11.5px; color:var(--faint); margin-top:2px; font-family:var(--mono)}
+
+  /* ---------- message cards ---------- */
+  .msgs{display:grid; grid-template-columns:repeat(3,1fr); gap:16px}
+  .phone{background:var(--panel); border:1px solid var(--line); border-radius:20px; padding:16px; box-shadow:var(--shadow)}
+  .phone .bar{display:flex; align-items:center; justify-content:space-between; font-family:var(--mono); font-size:11px; color:var(--faint); padding:2px 6px 12px}
+  .phone .lang{color:var(--amber-ink)}
+  .alert{background:var(--panel-2); border:1px solid var(--line-2); border-radius:13px; padding:15px; border-left:3px solid var(--amber)}
+  .alert .hd{display:flex; align-items:center; gap:8px; font-size:12px; font-weight:800; color:var(--amber-ink); margin-bottom:9px; letter-spacing:.01em}
+  .alert .hd .siren{width:9px;height:9px;border-radius:50%;background:var(--amber);box-shadow:0 0 0 3px var(--amber-bg)}
+  .alert .body{font-size:13.5px; line-height:1.66; color:var(--ink)}
+  .alert.ru .body{font-size:13px}
+  .phone .meta{font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:10px; text-align:center}
+  .phone.easy .alert{border-left-color:var(--reach)} .phone.easy .hd{color:var(--reach-ink)} .phone.easy .hd .siren{background:var(--reach);box-shadow:0 0 0 3px var(--reach-bg)}
+
+  /* ---------- roadmap ---------- */
+  .road{display:grid; grid-template-columns:repeat(4,1fr); gap:0; border:1px solid var(--line); border-radius:16px; overflow:hidden; background:var(--panel)}
+  .rd{padding:24px 20px; border-right:1px solid var(--line); position:relative}
+  .rd:last-child{border-right:none}
+  .rd .ph{font-family:var(--mono); font-size:12px; letter-spacing:.08em; color:var(--amber-ink)}
+  .rd h3{font-size:18px; font-weight:850; margin:10px 0 8px; letter-spacing:-.01em}
+  .rd p{font-size:13.5px; color:var(--dim)}
+  .rd .scale{margin-top:14px; font-family:var(--mono); font-size:11px; color:var(--faint)}
+  .rd::after{content:"→"; position:absolute; right:-9px; top:26px; font-family:var(--mono); color:var(--faint); background:var(--ground); z-index:2; width:18px; text-align:center}
+  .rd:last-child::after{display:none}
+
+  /* footer */
+  .foot-band{padding:48px 0 64px; border-top:1px solid var(--line); color:var(--dim); font-size:13.5px}
+  .foot-band .col{display:flex; justify-content:space-between; gap:18px; flex-wrap:wrap; align-items:center}
+  .foot-band .mono{font-family:var(--mono); font-size:12px; color:var(--faint)}
+
+  /* reveal */
+  .rv{opacity:0; transform:translateY(18px); transition:opacity .7s ease, transform .7s cubic-bezier(.2,.8,.25,1)}
+  .rv.in{opacity:1; transform:none}
+  @media (prefers-reduced-motion: reduce){ .rv{opacity:1;transform:none;transition:none} html{scroll-behavior:auto} }
+
+  /* responsive */
+  @media (max-width:880px){
+    .stats{grid-template-columns:repeat(2,1fr)} .stat{grid-column:span 1}
+    .grid6{grid-template-columns:1fr 1fr}
+    .pipe{grid-template-columns:1fr 1fr} .step{border-right:1px solid var(--line); border-bottom:1px solid var(--line)}
+    .tl-wrap{grid-template-columns:1fr} .mx{grid-template-columns:1fr}
+    .ch-wrap{grid-template-columns:1fr} .msgs{grid-template-columns:1fr}
+    .road{grid-template-columns:1fr 1fr} .rd::after{display:none}
+  }
+  @media (max-width:520px){
+    .stats{grid-template-columns:1fr} .grid6{grid-template-columns:1fr} .pipe{grid-template-columns:1fr}
+    .nodes{grid-template-columns:1fr 1fr} .road{grid-template-columns:1fr}
+    section{padding:56px 0}
+  }
+</style>
+
+<div class="wrap">
+
+  <!-- HERO -->
+  <header class="hero">
+    <canvas id="sig" aria-hidden="true"></canvas>
+    <div class="hero-veil"></div>
+    <div class="col">
+      <span class="badge"><span class="dot"></span>2026 안산시 공공데이터·AI 활용 아이디어 공모전</span>
+      <h1>모두의 <span class="g">사이렌</span></h1>
+      <p class="tag">재난문자의 <b>‘발송’</b>을 <i>‘도달’</i>로 바꾸는 AI 안전도시, 안산</p>
+      <p class="fine">지금까지 국가는 ‘몇 건 보냈는가’만 알았습니다. 모두의 사이렌은 ‘몇 분 만에, 몇 %에게 닿았는가’를 대한민국에서 처음으로 측정하고 관리합니다.</p>
+      <div class="flow">
+        <div class="chip send"><span class="k">지금까지</span><span class="v">발송했다</span></div>
+        <span class="arrow">→</span>
+        <div class="chip reach"><span class="k">모두의 사이렌</span><span class="v">닿았다</span></div>
+      </div>
+    </div>
+  </header>
+
+  <!-- WHY ANSAN -->
+  <section>
+    <div class="col">
+      <div class="head rv">
+        <div class="eyebrow"><span class="n">01</span> 왜 안산인가</div>
+        <h2 class="lead">문제가 가장 크고, 그것을 풀 데이터가 이미 열려 있는 도시</h2>
+      </div>
+      <div class="stats rv">
+        <div class="stat hot"><div class="num tnum">15.2<small>%</small></div><div class="lbl">외국인 주민 비율 — 경기도 1위</div></div>
+        <div class="stat"><div class="num tnum">10.2<small>만 명</small></div><div class="lbl">안산 거주 외국인 주민</div></div>
+        <div class="stat"><div class="num tnum">2.3<small>만 명</small></div><div class="lbl">러시아어권 고려인 공동체</div></div>
+        <div class="stat hot"><div class="num">7명 중 1명</div><div class="lbl">재난문자를 사실상 못 읽는 시민</div></div>
+        <div class="stat"><div class="num tnum">70<small>개국</small></div><div class="lbl">원곡동 다문화마을특구 거주 국적</div></div>
+        <div class="stat"><div class="num tnum">28<small>개</small></div><div class="lbl">시 관내 하천 — 호우·침수 위험원</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PROBLEM -->
+  <section>
+    <div class="col">
+      <div class="head rv">
+        <div class="eyebrow"><span class="n">02</span> 문제</div>
+        <h2 class="lead">재난문자는 ‘발송’에서 멈춰 있고, ‘도달’은 아무도 책임지지 않습니다</h2>
+        <p class="sub">최근 수년간 반복된 여섯 개의 실패 지점. 모두 실제 사례로 확인됩니다.</p>
+      </div>
+      <div class="grid6 rv">
+        <div class="fail"><div class="tp"><span class="id">01</span><h3>감지 지연</h3></div><p>위험 신호는 있었지만 담당자에게 종합되지 못했습니다.</p><div class="case">오송 참사 — 지하차도 경고 문자 <b>사고 2시간 29분 후</b> 발송</div></div>
+        <div class="fail"><div class="tp"><span class="id">02</span><h3>판단 지연·오발령</h3></div><p>확신이 없어 늦거나, 검증 없이 잘못 쏘거나.</p><div class="case">이태원 — 발송 요청 <b>78분</b> 미처리 / 서울 경계경보 오발령</div></div>
+        <div class="fail"><div class="tp"><span class="id">03</span><h3>문안 품질</h3></div><p>왜, 어디로 대피해야 하는지가 빠진 경보는 사람을 움직이지 못합니다.</p><div class="case">“안전에 유의하시기 바랍니다” — 행동 없는 문구</div></div>
+        <div class="fail"><div class="tp"><span class="id">04</span><h3>표적 부재</h3></div><p>위험과 무관한 시민에게까지 반복 발송돼 피로가 쌓입니다.</p><div class="case">피로감에 <b>알림을 끄는 시민</b> — 정작 위험할 때 공백</div></div>
+        <div class="fail"><div class="tp"><span class="id">05</span><h3>채널 단일</h3></div><p>휴대전화 문자 하나에 의존합니다.</p><div class="case">알림 차단·운전·작업·수면·한국어 미해득 시 사각</div></div>
+        <div class="fail"><div class="tp"><span class="id">06</span><h3>도달 미측정</h3></div><p>발송 건수만 알 뿐, 도달률을 재지 않아 개선되지 않습니다.</p><div class="case">측정이 없으면 <b>①~⑤가 영원히 반복</b>됩니다</div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- PIPELINE -->
+  <section>
+    <div class="col">
+      <div class="head rv">
+        <div class="eyebrow"><span class="n">03</span> 해법</div>
+        <h2 class="lead">재난문자 운영의 여섯 단계를 공공데이터와 AI로 잇습니다</h2>
+        <p class="sub">발송 버튼은 끝까지 사람이 누릅니다. AI는 시간과 확신과 도달을 만듭니다. <span style="color:var(--reach-ink)">● 표시</span>는 담당 공무원 승인 관문.</p>
+      </div>
+      <div class="pipe rv">
+        <div class="step"><span class="no">STEP 1</span><h3>감지</h3><p>수위·기상·교통·CCTV에서 이상 신호를 포착해 발송 검토를 자동 제안</p><div class="tags"><span class="t">수위 API</span><span class="t">기상특보</span><span class="t">교통흐름</span></div><div class="bar"></div></div>
+        <div class="step"><span class="no">STEP 2</span><h3>검증</h3><p>여러 신호를 교차검증해 신뢰도 점수와 근거를 한 화면에 제시</p><div class="gate">담당자 발송 결정</div><div class="bar"></div></div>
+        <div class="step"><span class="no">STEP 3</span><h3>작성</h3><p>157자 문안과 러시아어 포함 20개 언어·쉬운 한국어·음성을 자동 생성</p><div class="gate">담당자 문안 승인</div><div class="bar"></div></div>
+        <div class="step"><span class="no">STEP 4</span><h3>표적</h3><p>시간대 유동인구로 발송 범위를 동·골목 단위까지 산정</p><div class="gate">담당자 범위 확정</div><div class="bar"></div></div>
+        <div class="step"><span class="no">STEP 5</span><h3>전파</h3><p>문자와 동시에 전광판·정류소·상점·챗봇으로 다채널 동시 송출</p><div class="tags"><span class="t">VMS</span><span class="t">챗봇</span><span class="t">상점망</span></div><div class="bar"></div></div>
+        <div class="step"><span class="no">STEP 6</span><h3>도달확인</h3><p>도달률·도달시간을 산출하고 공백을 다음 발송에 반영</p><div class="tags"><span class="t">Reach Rate</span><span class="t">TTR</span></div><div class="bar"></div></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- TIMELINE -->
+  <section>
+    <div class="col">
+      <div class="head rv">
+        <div class="eyebrow"><span class="n">04</span> 검증 · 그날의 타임라인을 다시 돌린다</div>
+        <h2 class="lead">오송 지하차도 참사에 모두의 사이렌을 대입하면</h2>
+        <p class="sub">실제 공개된 사고 타임라인과, 같은 상황에 본 시스템을 적용했을 때의 대응을 나란히 둡니다.</p>
+      </div>
+      <div class="tl-wrap rv">
+        <div class="tl bad">
+          <div class="cap"><span class="who">실제 (2023.7.15)</span><span class="res">사망 14명</span></div>
+          <div class="ev"><div class="rail"><span class="pt"></span></div><div class="tk">T‑60분</div><div class="bd"><h4>119 신고·홍수경보 존재</h4><p>위험 신호가 있었으나 담당자에게 종합되지 못함</p></div></div>
+          <div class="ev"><div class="rail"><span class="pt"></span></div><div class="tk">T‑5분</div><div class="bd"><h4>‘저지대 침수 위험’ 일반 문자</h4><p>지하차도는 언급되지 않음</p></div></div>
+          <div class="ev k"><div class="rail"><span class="pt"></span></div><div class="tk">T 0</div><div class="bd"><h4>지하차도 침수 발생</h4><p>경로를 틀 수 없는 시점</p></div></div>
+          <div class="ev k"><div class="rail"><span class="pt"></span></div><div class="tk">T+149분</div><div class="bd"><h4>지하차도 진입금지 문자 발송</h4><p>사고 2시간 29분 후</p></div></div>
+        </div>
+        <div class="tl good">
+          <div class="cap"><span class="who">모두의 사이렌 적용 시</span><span class="res">TTR 5분 이내</span></div>
+          <div class="ev"><div class="rail"><span class="pt"></span></div><div class="tk">T‑60분</div><div class="bd"><h4>수위 임계 초과 + 교통 이상 감지</h4><p>발송 검토 티켓 자동 발제</p></div></div>
+          <div class="ev"><div class="rail"><span class="pt"></span></div><div class="tk">T‑57분</div><div class="bd"><h4>교차검증 → 담당자 승인</h4><p>수위·강우·교통·CCTV 근거 묶음 제시</p></div></div>
+          <div class="ev"><div class="rail"><span class="pt"></span></div><div class="tk">T‑56분</div><div class="bd"><h4>157자 문안·다국어 생성 + 표적</h4><p>지하차도 통과 예상 인구로 범위 산정</p></div></div>
+          <div class="ev k"><div class="rail"><span class="pt"></span></div><div class="tk">T‑55분</div><div class="bd"><h4>문자·전광판·정류소·상점 동시 송출</h4><p>도달률 확인 후 미도달 골목 재송출</p></div></div>
+        </div>
+      </div>
+      <div class="tl-note rv"><span class="save"><span>회피 가능 시간</span><b class="tnum">54분</b><span>확보</span></span></div>
+    </div>
+  </section>
+
+  <!-- METRICS -->
+  <section>
+    <div class="col">
+      <div class="head rv">
+        <div class="eyebrow"><span class="n">05</span> 두 개의 성적표</div>
+        <h2 class="lead">재난 커뮤니케이션에 처음으로 성능 지표를 붙입니다</h2>
+        <p class="sub">재는 순간부터 개선이 시작됩니다. 두 지표 모두 매 발령마다 개방 데이터로 실측됩니다.</p>
+      </div>
+      <div class="mx rv">
+        <div class="metric">
+          <div class="mh"><span class="code">TTR</span><span class="mt">도달시간 — 위험 포착부터 시민 도달까지</span></div>
+          <div class="ba">
+            <div class="row b"><span class="tag">현재</span><div class="track"><div class="fill bad" data-w="100"></div></div><span class="val">149분</span></div>
+            <div class="row g"><span class="tag">목표</span><div class="track"><div class="fill ok" data-w="3.4"></div></div><span class="val">5분 이내</span></div>
+          </div>
+          <p class="foot">오송 사례(2시간 29분) 대비 — 감지 자동화·근거 제시·다채널 송출로 단계별 지연을 제거</p>
+        </div>
+        <div class="metric">
+          <div class="mh"><span class="code">REACH</span><span class="mt">도달률 — 이해 가능한 형태로 받은 비율</span></div>
+          <div class="ba">
+            <div class="row w"><span class="tag">현재</span><div class="track"><div class="fill warn" data-w="85"></div></div><span class="val">~85%</span></div>
+            <div class="row g"><span class="tag">목표</span><div class="track"><div class="fill ok" data-w="95"></div></div><span class="val">95%+</span></div>
+          </div>
+          <p class="foot">언어 기준 상한에서, 20개 언어 확대와 전광판·정류소·상점·챗봇 보조 채널로 상향</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CHANNELS -->
+  <section>
+    <div class="col">
+      <div class="head rv">
+        <div class="eyebrow"><span class="n">06</span> 전파 · 설치를 기다리지 않고 도시가 민다</div>
+        <h2 class="lead">앱을 하나 더 만들지 않습니다. 도시가 이미 가진 채널로 밀어냅니다</h2>
+      </div>
+      <div class="ch-wrap rv">
+        <div class="pull">
+          <div class="t">기존 — 당겨야 받는 구조</div>
+          <div class="d">외국인용 재난 앱은 직접 설치한 사람에게만, 5개 언어로만 작동합니다.</div>
+          <div class="lang"><span>영어</span><span>중국어</span><span>베트남어</span><span>태국어</span><span>일본어</span><span class="no">러시아어</span></div>
+        </div>
+        <div class="push">
+          <div class="t">모두의 사이렌 — 도시가 미는 구조</div>
+          <div class="d">설치 여부와 상관없이, 시가 보유한 다섯 채널로 러시아어 포함 20개 언어를 동시 전파합니다.</div>
+          <div class="nodes">
+            <div class="node"><div class="ic">📨</div><div class="nm">긴급재난문자</div><div class="ds">CBS</div></div>
+            <div class="node"><div class="ic">🚦</div><div class="nm">도로전광판</div><div class="ds">VMS</div></div>
+            <div class="node"><div class="ic">🚏</div><div class="nm">버스정류소</div><div class="ds">STOP</div></div>
+            <div class="node"><div class="ic">🏪</div><div class="nm">동네 상점망</div><div class="ds">NODE</div></div>
+            <div class="node"><div class="ic">💬</div><div class="nm">다국어 챗봇</div><div class="ds">BOT</div></div>
+            <div class="node"><div class="ic">📶</div><div class="nm">공공와이파이</div><div class="ds">WIFI</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- MESSAGE CARDS -->
+  <section>
+    <div class="col">
+      <div class="head rv">
+        <div class="eyebrow"><span class="n">07</span> 시민이 실제로 받는 화면</div>
+        <h2 class="lead">같은 위험을, 각자 알아들을 수 있는 말로</h2>
+        <p class="sub">하나의 상황에서 언어·수준별로 생성되는 안내. 대피소는 이재민수용시설 데이터에서 최근접 시설이 자동 선택됩니다.</p>
+      </div>
+      <div class="msgs rv">
+        <div class="phone">
+          <div class="bar"><span>안산시 · CBS</span><span class="lang">국문 · 157자</span></div>
+          <div class="alert">
+            <div class="hd"><span class="siren"></span>긴급재난문자</div>
+            <div class="body">[안산시] 오늘 15시 안산천 수위 급상승, 원곡동·선부동 저지대 침수 위험. 지하차도·하천변 접근을 금지합니다. 차량은 우회하세요. 가까운 대피소는 원곡초등학교, 선부고등학교입니다. 거동이 불편한 이웃과 함께 대피하세요. ☎031-481-2000</div>
+          </div>
+          <div class="meta">140자 · 대피소 자동첨부</div>
+        </div>
+        <div class="phone">
+          <div class="bar"><span>안산시 · 상점망</span><span class="lang">Русский</span></div>
+          <div class="alert ru">
+            <div class="hd"><span class="siren"></span>ЭКСТРЕННОЕ ОПОВЕЩЕНИЕ</div>
+            <div class="body">[г. Ансан] 15:00 — резкий подъём воды в реке Ансанчхон. Риск подтопления в Вонгок-дон и Сонбу-дон. Не подходите к реке и подземным переездам. Укрытие: нач. школа Вонгок. ☎031-481-2000</div>
+          </div>
+          <div class="meta">고려인 2.3만 명 · AI 생성 표시</div>
+        </div>
+        <div class="phone easy">
+          <div class="bar"><span>안산시 · 챗봇</span><span class="lang">쉬운 한국어</span></div>
+          <div class="alert">
+            <div class="hd"><span class="siren"></span>안전 안내</div>
+            <div class="body">비가 아주 많이 와요. 안산천 물이 넘칠 수 있어요. 원곡동, 선부동 낮은 곳은 위험해요. 지하차도와 하천 근처에 가지 마세요. 안전한 곳: 원곡초등학교. ☎031-481-2000</div>
+          </div>
+          <div class="meta">고령·저시력 · 음성(TTS) 병행</div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ROADMAP -->
+  <section>
+    <div class="col">
+      <div class="head rv">
+        <div class="eyebrow"><span class="n">08</span> 안산에서 전국으로, 그리고 밖으로</div>
+        <h2 class="lead">지표와 구조가 전국 공통 개방데이터 위에 있어 그대로 복제됩니다</h2>
+      </div>
+      <div class="road rv">
+        <div class="rd"><div class="ph">STAGE 1</div><h3>안산 실증</h3><p>호우·폭염 시즌 병행 운영, 도달률 기준값 실측</p><div class="scale">1개 시</div></div>
+        <div class="rd"><div class="ph">STAGE 2</div><h3>경기 확산</h3><p>경기데이터드림 공통 데이터로 31개 시군 복제</p><div class="scale">31개 시군</div></div>
+        <div class="rd"><div class="ph">STAGE 3</div><h3>전국 표준</h3><p>행안부 재난문자 개편과 연계, 도달률 국가지표 제안</p><div class="scale">226개 기초지자체</div></div>
+        <div class="rd"><div class="ph">STAGE 4</div><h3>해외 진출</h3><p>표적·도달 측정을 남긴 미·일 경보체계에 다국어 모델</p><div class="scale">CAP 국제표준</div></div>
+      </div>
+    </div>
+  </section>
+
+  <footer class="foot-band">
+    <div class="col">
+      <div>모두의 사이렌 — 재난문자의 ‘발송’을 ‘도달’로 바꾸는 AI 안전도시, 안산</div>
+      <div class="mono">2026 안산시 공공데이터·AI 활용 아이디어 공모전 · 아이디어 기획 부문</div>
+    </div>
+  </footer>
+
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* reveal + bar fills + pipeline light */
+  var io = new IntersectionObserver(function(es){
+    es.forEach(function(e){
+      if(!e.isIntersecting) return;
+      e.target.classList.add('in');
+      e.target.querySelectorAll('.fill').forEach(function(f){ f.style.width = f.getAttribute('data-w') + '%'; });
+      e.target.querySelectorAll('.step').forEach(function(s,i){ setTimeout(function(){ s.classList.add('lit'); }, reduce?0:i*90); });
+      io.unobserve(e.target);
+    });
+  }, {threshold:0.16});
+  document.querySelectorAll('.rv').forEach(function(el){ io.observe(el); });
+
+  /* hero signal canvas */
+  var c = document.getElementById('sig'); if(!c) return;
+  var ctx = c.getContext('2d'), W, H, dpr, dots=[], rings=[], src, t0=null, RESET=4200;
+  function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+  function hex(v){ var s=css(v); return s || '#FFB130'; }
+  function resize(){
+    dpr = Math.min(window.devicePixelRatio||1, 2);
+    W = c.clientWidth; H = c.clientHeight;
+    c.width = W*dpr; c.height = H*dpr; ctx.setTransform(dpr,0,0,dpr,0,0);
+    src = {x: W*0.16, y: H*0.42};
+    dots = [];
+    var n = W<640?26:52;
+    for(var i=0;i<n;i++){
+      var x = src.x + 40 + Math.random()*(W-src.x-40);
+      var y = 30 + Math.random()*(H-60);
+      dots.push({x:x,y:y, d:Math.hypot(x-src.x,y-src.y), lit:0});
+    }
+  }
+  function ring(){ rings.push({r:0}); }
+  var amber, reach, dim;
+  function palette(){ amber=hex('--amber'); reach=hex('--reach'); dim=hex('--faint'); }
+  function draw(ts){
+    if(t0===null) t0=ts;
+    var el = ts - t0;
+    ctx.clearRect(0,0,W,H);
+    // rings
+    if(rings.length===0 || rings[rings.length-1].r>120) if(rings.length<4) ring();
+    var maxR = Math.hypot(W,H);
+    for(var i=rings.length-1;i>=0;i--){
+      var rg=rings[i]; rg.r += 2.4;
+      var a = Math.max(0, 1 - rg.r/maxR);
+      ctx.beginPath(); ctx.arc(src.x,src.y,rg.r,0,Math.PI*2);
+      ctx.strokeStyle = amber; ctx.globalAlpha = a*0.5; ctx.lineWidth=1.4; ctx.stroke();
+      if(rg.r>maxR) rings.splice(i,1);
+    }
+    ctx.globalAlpha=1;
+    // dots light as nearest ring passes
+    var frontier = rings.length? Math.max.apply(null,rings.map(function(r){return r.r;})) : 0;
+    dots.forEach(function(d){
+      if(frontier > d.d) d.lit = Math.min(1, d.lit + 0.06);
+      var col = d.lit>0.5? reach : dim;
+      ctx.beginPath(); ctx.arc(d.x,d.y, d.lit>0.5?3.2:2.2, 0, Math.PI*2);
+      ctx.fillStyle = col; ctx.globalAlpha = 0.35 + d.lit*0.55; ctx.fill();
+      if(d.lit>0.5){ ctx.globalAlpha=0.12; ctx.beginPath(); ctx.arc(d.x,d.y,7,0,Math.PI*2); ctx.fillStyle=reach; ctx.fill(); }
+    });
+    ctx.globalAlpha=1;
+    // source
+    ctx.beginPath(); ctx.arc(src.x,src.y,5,0,Math.PI*2); ctx.fillStyle=amber; ctx.fill();
+    ctx.globalAlpha=0.18; ctx.beginPath(); ctx.arc(src.x,src.y,12,0,Math.PI*2); ctx.fillStyle=amber; ctx.fill(); ctx.globalAlpha=1;
+    if(el>RESET){ t0=ts; rings=[]; dots.forEach(function(d){ d.lit=0; }); }
+    raf = requestAnimationFrame(draw);
+  }
+  var raf;
+  function start(){ palette(); resize();
+    if(reduce){ // static frame: all reached
+      ctx.clearRect(0,0,W,H);
+      ctx.beginPath(); ctx.arc(src.x,src.y, Math.hypot(W,H)*0.5,0,Math.PI*2); ctx.strokeStyle=amber; ctx.globalAlpha=0.25; ctx.lineWidth=1.4; ctx.stroke(); ctx.globalAlpha=1;
+      dots.forEach(function(d){ ctx.beginPath(); ctx.arc(d.x,d.y,3,0,Math.PI*2); ctx.fillStyle=reach; ctx.globalAlpha=0.8; ctx.fill(); });
+      ctx.globalAlpha=1; ctx.beginPath(); ctx.arc(src.x,src.y,5,0,Math.PI*2); ctx.fillStyle=amber; ctx.fill();
+      return;
+    }
+    cancelAnimationFrame(raf); t0=null; rings=[]; raf=requestAnimationFrame(draw);
+  }
+  var to; window.addEventListener('resize', function(){ clearTimeout(to); to=setTimeout(start,180); });
+  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', palette);
+  start();
+})();
+</script>
