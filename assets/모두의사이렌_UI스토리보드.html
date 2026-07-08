@@ -1,0 +1,527 @@
+<title>모두의 사이렌 — 화면 구성(스토리보드)</title>
+<style>
+  :root{
+    --ground:#0C121B; --panel:#131D29; --panel-2:#1A2532; --panel-3:#212E3D;
+    --ink:#E9EFF7; --dim:#93A5BA; --faint:#5E6F84;
+    --line:#25313E; --line-2:#31404F;
+    --amber:#FFB130; --amber-ink:#FFC768; --amber-bg:#FFB13018;
+    --reach:#2ED9A6; --reach-ink:#5CE6BE; --reach-bg:#2ED9A618;
+    --crit:#FF5C6C; --crit-bg:#FF5C6C18; --crit-ink:#FF8B96;
+    --shadow:0 24px 60px -28px #00060ccc;
+    --mono:'SF Mono','JetBrains Mono','D2Coding',ui-monospace,'Cascadia Code',Consolas,monospace;
+    --kr:'Pretendard',-apple-system,BlinkMacSystemFont,'Apple SD Gothic Neo','Malgun Gothic','Noto Sans KR',sans-serif;
+  }
+  :root[data-theme="light"]{
+    --ground:#E8EDF4; --panel:#FFFFFF; --panel-2:#F3F7FC; --panel-3:#E9EFF6;
+    --ink:#111C28; --dim:#556579; --faint:#8494A6;
+    --line:#E0E7F0; --line-2:#CCD7E4;
+    --amber:#B96700; --amber-ink:#9A5600; --amber-bg:#B9670014;
+    --reach:#0A9068; --reach-ink:#08805C; --reach-bg:#0A906814;
+    --crit:#D62F42; --crit-bg:#D62F4214; --crit-ink:#B01F30;
+    --shadow:0 24px 50px -30px #35486155;
+  }
+  @media (prefers-color-scheme: light){
+    :root:not([data-theme="dark"]){
+      --ground:#E8EDF4; --panel:#FFFFFF; --panel-2:#F3F7FC; --panel-3:#E9EFF6;
+      --ink:#111C28; --dim:#556579; --faint:#8494A6;
+      --line:#E0E7F0; --line-2:#CCD7E4;
+      --amber:#B96700; --amber-ink:#9A5600; --amber-bg:#B9670014;
+      --reach:#0A9068; --reach-ink:#08805C; --reach-bg:#0A906814;
+      --crit:#D62F42; --crit-bg:#D62F4214; --crit-ink:#B01F30;
+      --shadow:0 24px 50px -30px #35486155;
+    }
+  }
+  *{box-sizing:border-box}
+  body{margin:0}
+  .wrap{background:var(--ground); color:var(--ink); font-family:var(--kr); -webkit-font-smoothing:antialiased; line-height:1.6; overflow-x:hidden}
+  .col{max-width:1120px; margin:0 auto; padding:0 24px}
+
+  /* page head */
+  .top{padding:64px 0 26px; border-bottom:1px solid var(--line)}
+  .eyebrow{font-family:var(--mono); font-size:12px; letter-spacing:.14em; color:var(--amber-ink); text-transform:uppercase; display:flex; gap:9px; align-items:center}
+  .eyebrow .n{color:var(--faint)}
+  .top h1{font-size:clamp(30px,4.6vw,46px); font-weight:850; letter-spacing:-.03em; margin:14px 0 0; text-wrap:balance}
+  .top p{color:var(--dim); font-size:16.5px; max-width:64ch; margin:12px 0 0}
+  .legend{display:flex; gap:18px; flex-wrap:wrap; margin-top:20px; font-family:var(--mono); font-size:12px; color:var(--dim)}
+  .legend b{display:inline-flex; align-items:center; gap:6px; font-weight:400}
+  .sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+
+  .sect-label{display:flex; align-items:baseline; gap:12px; margin:56px 0 22px}
+  .sect-label .k{font-family:var(--mono); font-size:12px; color:var(--faint); letter-spacing:.1em}
+  .sect-label h2{font-size:22px; font-weight:800; letter-spacing:-.02em; margin:0}
+
+  /* shot */
+  .shot{margin:0 0 34px}
+  .shot .cap{display:flex; align-items:center; gap:12px; margin-bottom:12px; flex-wrap:wrap}
+  .shot .cap .step{font-family:var(--mono); font-size:11px; color:var(--ground); background:var(--amber); border-radius:6px; padding:3px 9px; font-weight:700; letter-spacing:.04em}
+  .shot .cap .nm{font-size:17px; font-weight:800; letter-spacing:-.01em}
+  .shot .cap .pp{color:var(--dim); font-size:14px}
+
+  /* app chrome */
+  .app{background:var(--panel); border:1px solid var(--line-2); border-radius:16px; overflow:hidden; box-shadow:var(--shadow)}
+  .app-bar{display:flex; align-items:center; gap:12px; padding:11px 16px; background:var(--panel-2); border-bottom:1px solid var(--line)}
+  .app-bar .dots{display:flex; gap:6px}
+  .app-bar .dots i{width:10px;height:10px;border-radius:50%;background:var(--line-2); display:block}
+  .app-bar .addr{font-family:var(--mono); font-size:12px; color:var(--faint); background:var(--panel); border:1px solid var(--line); border-radius:7px; padding:4px 12px; flex:1; max-width:340px}
+  .app-bar .live{margin-left:auto; font-family:var(--mono); font-size:11.5px; color:var(--reach-ink); display:flex; align-items:center; gap:6px}
+  .app-bar .live::before{content:"";width:7px;height:7px;border-radius:50%;background:var(--reach); box-shadow:0 0 0 3px var(--reach-bg)}
+  .app-body{display:grid; grid-template-columns:64px 1fr; min-height:390px}
+
+  /* rail */
+  .rail{background:var(--panel-2); border-right:1px solid var(--line); padding:14px 0; display:flex; flex-direction:column; gap:4px; align-items:center}
+  .rail .logo{width:30px;height:30px;border-radius:9px;background:linear-gradient(135deg,var(--amber),var(--reach)); margin-bottom:12px; position:relative}
+  .rail .logo::after{content:"";position:absolute; inset:9px; border-radius:50%; border:2px solid var(--ground); opacity:.55}
+  .rail a{width:46px;height:46px; border-radius:11px; display:flex; flex-direction:column; align-items:center; justify-content:center; gap:2px; color:var(--faint); text-decoration:none; font-size:10px; font-family:var(--mono)}
+  .rail a .ic{font-size:16px; line-height:1}
+  .rail a.on{background:var(--panel-3); color:var(--amber-ink)}
+  .rail a.on .ic{filter:saturate(1.2)}
+
+  .scr{padding:18px; overflow-x:auto}
+  .scr-top{display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:14px}
+  .scr-top .ttl{font-size:15px; font-weight:800; letter-spacing:-.01em}
+  .scr-top .rd{font-family:var(--mono); font-size:11.5px; color:var(--dim)}
+  .split{display:grid; gap:14px}
+
+  /* generic panels */
+  .card{background:var(--panel-2); border:1px solid var(--line); border-radius:12px; padding:14px}
+  .card .h{font-family:var(--mono); font-size:11px; letter-spacing:.08em; color:var(--faint); text-transform:uppercase; margin-bottom:10px; display:flex; justify-content:space-between; align-items:center}
+  .pill{font-family:var(--mono); font-size:10.5px; padding:2px 8px; border-radius:20px; letter-spacing:.03em}
+  .pill.hi{color:var(--crit-ink); background:var(--crit-bg); border:1px solid var(--crit)}
+  .pill.md{color:var(--amber-ink); background:var(--amber-bg); border:1px solid var(--amber)}
+  .pill.ok{color:var(--reach-ink); background:var(--reach-bg); border:1px solid var(--reach)}
+  .btn{font-family:var(--kr); font-weight:700; font-size:13.5px; border-radius:10px; padding:11px 16px; border:1px solid var(--line-2); background:var(--panel-3); color:var(--ink); cursor:default}
+  .btn.pri{background:var(--amber); color:#1a1206; border-color:transparent}
+  .btn.go{background:var(--reach); color:#04140e; border-color:transparent}
+  .btn-row{display:flex; gap:10px; margin-top:12px}
+
+  /* hexmap */
+  .mapwrap{position:relative; border-radius:12px; overflow:hidden; border:1px solid var(--line); background:var(--panel-3); min-height:300px}
+  canvas.hex{display:block; width:100%; height:100%}
+  .mapwrap .tag{position:absolute; font-family:var(--mono); font-size:11px; color:var(--ink); background:#0c121bcc; border:1px solid var(--line-2); padding:2px 7px; border-radius:6px; pointer-events:none}
+  :root[data-theme="light"] .mapwrap .tag{background:#ffffffdd}
+  .mapleg{position:absolute; left:12px; bottom:12px; display:flex; gap:12px; font-family:var(--mono); font-size:10.5px; color:var(--dim); background:#0c121baa; padding:6px 10px; border-radius:8px; border:1px solid var(--line)}
+  :root[data-theme="light"] .mapleg{background:#ffffffcc}
+
+  /* queue list */
+  .q{display:flex; flex-direction:column; gap:8px}
+  .qi{display:grid; grid-template-columns:auto 1fr auto; gap:10px; align-items:center; padding:11px 12px; border-radius:10px; background:var(--panel); border:1px solid var(--line)}
+  .qi.act{border-color:var(--crit); background:var(--crit-bg)}
+  .qi .tm{font-family:var(--mono); font-size:12px; color:var(--dim)}
+  .qi .tx{font-size:13.5px; font-weight:600}
+  .qi .tx small{display:block; font-weight:400; color:var(--faint); font-size:11.5px; font-family:var(--mono)}
+
+  /* gauge */
+  .gauge{display:flex; align-items:center; gap:16px}
+  .ring{--v:78; --c:var(--amber); width:104px;height:104px;border-radius:50%; flex:none;
+    background:conic-gradient(var(--c) calc(var(--v)*1%), var(--line) 0); position:relative; display:grid; place-items:center}
+  .ring::before{content:"";position:absolute; inset:11px; border-radius:50%; background:var(--panel-2)}
+  .ring .v{position:relative; font-family:var(--mono); font-weight:700; font-size:26px; font-variant-numeric:tabular-nums}
+  .ring .v small{font-size:12px; color:var(--dim)}
+  .gauge .gl{font-size:13px; color:var(--dim)}
+  .gauge .gl b{color:var(--ink); font-size:15px; display:block; font-weight:700; margin-bottom:3px}
+
+  /* contribution bars */
+  .contrib{display:flex; flex-direction:column; gap:9px; margin-top:4px}
+  .contrib .cr{display:grid; grid-template-columns:74px 1fr 42px; gap:10px; align-items:center; font-size:12.5px}
+  .contrib .cr .nm{color:var(--dim)}
+  .contrib .cr .tk{height:8px; border-radius:5px; background:var(--line); overflow:hidden}
+  .contrib .cr .tk i{display:block; height:100%; border-radius:5px; background:var(--amber)}
+  .contrib .cr.dn .tk i{background:var(--crit)}
+  .contrib .cr .vv{font-family:var(--mono); font-size:11.5px; text-align:right; color:var(--dim)}
+
+  /* cctv */
+  .cctv{border-radius:10px; overflow:hidden; border:1px solid var(--line-2); position:relative; background:#0a0f16; min-height:150px}
+  .cctv canvas{display:block;width:100%;height:100%}
+  .cctv .ov{position:absolute; inset:0; display:flex; flex-direction:column; justify-content:space-between; padding:9px 11px; font-family:var(--mono); font-size:11px; color:#cfe}
+  .cctv .ov .r{display:flex; justify-content:space-between; align-items:center}
+  .cctv .rec{color:#ff6b78; display:flex; align-items:center; gap:5px}
+  .cctv .rec::before{content:"";width:7px;height:7px;border-radius:50%;background:#ff5c6c}
+
+  /* compose */
+  .draft{background:var(--panel); border:1px solid var(--line-2); border-radius:10px; padding:13px; font-size:14px; line-height:1.72; min-height:150px}
+  .cc{display:flex; justify-content:space-between; align-items:center; margin-top:10px; font-family:var(--mono); font-size:11.5px; color:var(--dim)}
+  .cc b{color:var(--reach-ink)}
+  .chipset{display:flex; gap:6px; flex-wrap:wrap; margin-top:10px}
+  .chipset .c{font-size:11.5px; font-family:var(--mono); padding:4px 9px; border-radius:7px; background:var(--panel-3); border:1px solid var(--line); color:var(--amber-ink)}
+  .prev{display:flex; flex-direction:column; gap:9px}
+  .prev .p{background:var(--panel); border:1px solid var(--line); border-radius:9px; padding:11px}
+  .prev .p .l{font-family:var(--mono); font-size:10.5px; color:var(--faint); margin-bottom:5px; display:flex; justify-content:space-between}
+  .prev .p .b{font-size:12.5px; line-height:1.6; color:var(--ink)}
+  .wave{display:flex; align-items:center; gap:2px; height:26px}
+  .wave i{flex:1; background:var(--reach); border-radius:2px; opacity:.7}
+
+  /* exposure */
+  .big{font-family:var(--mono); font-weight:750; font-size:30px; letter-spacing:-.02em; font-variant-numeric:tabular-nums}
+  .big small{font-size:14px; color:var(--dim); font-weight:400; margin-left:4px}
+  .langbar{display:flex; height:14px; border-radius:7px; overflow:hidden; margin:12px 0 10px; border:1px solid var(--line)}
+  .langbar i{height:100%}
+  .langkey{display:flex; flex-direction:column; gap:6px}
+  .langkey .lr{display:grid; grid-template-columns:auto 1fr auto; gap:9px; align-items:center; font-size:12.5px}
+  .langkey .lr .d{width:9px;height:9px;border-radius:3px}
+  .langkey .lr .nm{color:var(--dim)} .langkey .lr .vv{font-family:var(--mono); color:var(--ink); font-variant-numeric:tabular-nums}
+  .checks{display:flex; flex-direction:column; gap:8px}
+  .checks .ck{display:flex; align-items:center; gap:10px; font-size:13px; padding:9px 11px; border-radius:9px; background:var(--panel); border:1px solid var(--line)}
+  .checks .ck .bx{width:18px;height:18px;border-radius:5px; background:var(--reach); color:#04140e; display:grid; place-items:center; font-size:12px; font-weight:800; flex:none}
+  .checks .ck .mono{margin-left:auto; font-family:var(--mono); font-size:11px; color:var(--faint)}
+
+  /* result */
+  .impr{background:var(--reach-bg); border:1px solid var(--reach); border-radius:10px; padding:12px 13px; font-size:13px; color:var(--ink); display:flex; gap:10px; align-items:flex-start}
+  .impr .ic{color:var(--reach); font-weight:800}
+  .kpi{display:flex; gap:10px; margin-bottom:12px}
+  .kpi .k{flex:1; background:var(--panel); border:1px solid var(--line); border-radius:10px; padding:11px 13px}
+  .kpi .k .l{font-family:var(--mono); font-size:10.5px; color:var(--faint); text-transform:uppercase; letter-spacing:.06em}
+  .kpi .k .v{font-family:var(--mono); font-weight:750; font-size:21px; margin-top:4px; font-variant-numeric:tabular-nums}
+  .kpi .k .v.g{color:var(--reach-ink)}
+
+  /* citizen phones */
+  .phones{display:grid; grid-template-columns:repeat(3,1fr); gap:18px}
+  .ph{background:linear-gradient(180deg,#10202f,#0a1420); border:1px solid var(--line-2); border-radius:26px; padding:14px 13px 16px; box-shadow:var(--shadow); position:relative}
+  :root[data-theme="light"] .ph{background:linear-gradient(180deg,#dbe6f2,#c7d5e6)}
+  .ph .status{display:flex; justify-content:space-between; align-items:center; padding:2px 10px 12px; font-family:var(--mono); font-size:11px; color:var(--ink); opacity:.8}
+  .ph .notch{position:absolute; top:12px; left:50%; transform:translateX(-50%); width:70px; height:5px; border-radius:5px; background:#00000040}
+  .noti{background:var(--panel); border:1px solid var(--line-2); border-radius:16px; padding:13px; border-left:3px solid var(--amber)}
+  .noti .top{display:flex; align-items:center; gap:8px; margin-bottom:9px}
+  .noti .app-ic{width:22px;height:22px;border-radius:6px;background:var(--amber); display:grid; place-items:center; font-size:12px; flex:none}
+  .noti .who{font-size:11.5px; font-weight:800; color:var(--amber-ink); letter-spacing:.02em}
+  .noti .who small{display:block; font-weight:400; color:var(--faint); font-family:var(--mono); font-size:10px; letter-spacing:0}
+  .noti .now{margin-left:auto; font-family:var(--mono); font-size:10px; color:var(--faint)}
+  .noti .msg{font-size:13px; line-height:1.66; color:var(--ink)}
+  .noti.ru{border-left-color:var(--amber)} .noti.ru .msg{font-size:12.5px}
+  .noti.easy{border-left-color:var(--reach)} .noti.easy .app-ic{background:var(--reach)} .noti.easy .who{color:var(--reach-ink)}
+  .phcap{text-align:center; font-family:var(--mono); font-size:11px; color:var(--faint); margin-top:11px}
+  .phlabel{text-align:center; font-size:13px; font-weight:700; margin-top:14px; color:var(--dim)}
+  .phlabel b{color:var(--ink)}
+
+  .foot{padding:44px 0 60px; border-top:1px solid var(--line); margin-top:40px; color:var(--dim); font-size:13px; display:flex; justify-content:space-between; gap:16px; flex-wrap:wrap}
+  .foot .mono{font-family:var(--mono); font-size:11.5px; color:var(--faint)}
+
+  .rv{opacity:0; transform:translateY(16px); transition:opacity .6s ease, transform .6s cubic-bezier(.2,.8,.25,1)}
+  .rv.in{opacity:1; transform:none}
+  @media (prefers-reduced-motion: reduce){.rv{opacity:1;transform:none;transition:none}}
+
+  @media (max-width:820px){
+    .app-body{grid-template-columns:52px 1fr}
+    .rail a{width:40px;height:40px}
+    .phones{grid-template-columns:1fr; max-width:360px; margin:0 auto}
+  }
+</style>
+
+<div class="wrap">
+  <div class="col">
+    <div class="top">
+      <div class="eyebrow"><span class="n">04</span> 화면 구성 · 스토리보드</div>
+      <h1>모두의 사이렌 관제 콘솔</h1>
+      <p>담당 공무원이 위험을 판단하고 승인하는 다섯 개의 운영 화면, 그리고 시민이 실제로 받아 보는 세 개의 안내 화면. 발송·문안·범위의 결정은 모두 사람이 하며, AI는 그 판단에 필요한 근거와 시간을 만듭니다.</p>
+      <div class="legend">
+        <b><span class="sw" style="background:var(--crit)"></span>위험·높음</b>
+        <b><span class="sw" style="background:var(--amber)"></span>주의·경보</b>
+        <b><span class="sw" style="background:var(--reach)"></span>도달·정상</b>
+        <b><span class="sw" style="background:var(--faint)"></span>관측·대기</b>
+      </div>
+    </div>
+
+    <div class="sect-label"><span class="k">OPERATOR</span><h2>운영 화면 — 담당자용 5</h2></div>
+
+    <!-- 1 상황판 -->
+    <figure class="shot rv">
+      <figcaption class="cap"><span class="step">STEP 1 · 감지</span><span class="nm">상황판</span><span class="pp">시 전역 위험 감시와 검토 요청 큐</span></figcaption>
+      <div class="app">
+        <div class="app-bar"><span class="dots"><i></i><i></i><i></i></span><span class="addr">console.siren.ansan.go.kr / monitor</span><span class="live">실시간 감시중</span></div>
+        <div class="app-body">
+          <nav class="rail"><span class="logo"></span>
+            <a class="on"><span class="ic">🛰️</span>상황판</a><a><span class="ic">🔎</span>검증</a><a><span class="ic">✍️</span>작성</a><a><span class="ic">🎯</span>표적</a><a><span class="ic">📈</span>결과</a>
+          </nav>
+          <div class="scr">
+            <div class="scr-top"><span class="ttl">전역 위험 상황판</span><span class="rd">관측소 42 · 하천 28 · 14:02:36</span></div>
+            <div class="split" style="grid-template-columns:1.5fr 1fr">
+              <div class="mapwrap"><canvas class="hex" data-mode="risk"></canvas>
+                <div class="mapleg"><span><span class="sw" style="background:var(--crit)"></span>고위험</span><span><span class="sw" style="background:var(--amber)"></span>주의</span><span><span class="sw" style="background:var(--faint)"></span>정상</span></div>
+              </div>
+              <div class="card" style="background:transparent;border:none;padding:0">
+                <div class="h" style="padding:0 2px">검토 요청 큐 <span class="pill hi">3</span></div>
+                <div class="q">
+                  <div class="qi act"><span class="tm">14:02</span><span class="tx">안산천 수위 임계 초과<small>원곡·선부동 · 신뢰도 78</small></span><span class="pill hi">높음</span></div>
+                  <div class="qi"><span class="tm">13:47</span><span class="tx">본오동 구간 통행 급감<small>교통흐름 이상</small></span><span class="pill md">주의</span></div>
+                  <div class="qi"><span class="tm">13:30</span><span class="tx">폭염 특보 발효<small>체감 35℃ 이상</small></span><span class="pill md">주의</span></div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </figure>
+
+    <!-- 2 검증 -->
+    <figure class="shot rv">
+      <figcaption class="cap"><span class="step">STEP 2 · 검증</span><span class="nm">검증 화면</span><span class="pp">신뢰도 점수·신호 기여도·CCTV로 근거 확인 후 발송 결정</span></figcaption>
+      <div class="app">
+        <div class="app-bar"><span class="dots"><i></i><i></i><i></i></span><span class="addr">console.siren.ansan.go.kr / verify</span><span class="live">근거 수집 완료</span></div>
+        <div class="app-body">
+          <nav class="rail"><span class="logo"></span>
+            <a><span class="ic">🛰️</span>상황판</a><a class="on"><span class="ic">🔎</span>검증</a><a><span class="ic">✍️</span>작성</a><a><span class="ic">🎯</span>표적</a><a><span class="ic">📈</span>결과</a>
+          </nav>
+          <div class="scr">
+            <div class="scr-top"><span class="ttl">안산천 수위 임계 초과 — 근거 검증</span><span class="rd">TICKET #A-2231 · 14:02</span></div>
+            <div class="split" style="grid-template-columns:1fr 1fr">
+              <div class="card">
+                <div class="h">종합 신뢰도</div>
+                <div class="gauge"><div class="ring" style="--v:78;--c:var(--amber)"><span class="v">78<small>/100</small></span></div>
+                  <div class="gl"><b>발송 검토 권고</b>두 개 이상 신호가 임계를 동시 초과했습니다. 근거를 확인하고 결정하세요.</div>
+                </div>
+                <div class="contrib">
+                  <div class="cr"><span class="nm">하천 수위</span><span class="tk"><i style="width:88%"></i></span><span class="vv">+34</span></div>
+                  <div class="cr"><span class="nm">누적 강우</span><span class="tk"><i style="width:70%"></i></span><span class="vv">+25</span></div>
+                  <div class="cr dn"><span class="nm">구간 속도</span><span class="tk"><i style="width:52%"></i></span><span class="vv">−19</span></div>
+                  <div class="cr"><span class="nm">기상 특보</span><span class="tk"><i style="width:40%"></i></span><span class="vv">+12</span></div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="h">현장 확인 <span class="pill md">CH.07</span></div>
+                <div class="cctv"><canvas data-cctv="1"></canvas>
+                  <div class="ov"><div class="r"><span>안산천교 하류</span><span class="rec">LIVE</span></div><div class="r"><span>WGS84 37.32, 126.82</span><span>14:02:31</span></div></div>
+                </div>
+                <div class="btn-row"><button class="btn">보류</button><button class="btn">반려</button><button class="btn pri" style="margin-left:auto">발송 검토 시작 →</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </figure>
+
+    <!-- 3 작성 -->
+    <figure class="shot rv">
+      <figcaption class="cap"><span class="step">STEP 3 · 작성</span><span class="nm">문안 화면</span><span class="pp">157자 국문과 다국어·음성을 생성하고 담당자가 승인</span></figcaption>
+      <div class="app">
+        <div class="app-bar"><span class="dots"><i></i><i></i><i></i></span><span class="addr">console.siren.ansan.go.kr / compose</span><span class="live">AI 초안 생성됨</span></div>
+        <div class="app-body">
+          <nav class="rail"><span class="logo"></span>
+            <a><span class="ic">🛰️</span>상황판</a><a><span class="ic">🔎</span>검증</a><a class="on"><span class="ic">✍️</span>작성</a><a><span class="ic">🎯</span>표적</a><a><span class="ic">📈</span>결과</a>
+          </nav>
+          <div class="scr">
+            <div class="scr-top"><span class="ttl">재난문자 문안 — 호우·침수</span><span class="rd">필드 자동주입 · AI 생성 표시 적용</span></div>
+            <div class="split" style="grid-template-columns:1fr 1fr">
+              <div class="card">
+                <div class="h">국문 원문</div>
+                <div class="draft">[안산시] 오늘 15시 안산천 수위 급상승, 원곡동·선부동 저지대 침수 위험. 지하차도·하천변 접근을 금지합니다. 차량은 우회하세요. 가까운 대피소는 원곡초등학교, 선부고등학교입니다. 거동이 불편한 이웃과 함께 대피하세요. ☎031-481-2000</div>
+                <div class="cc"><span>글자 수 <b>140 / 157</b></span><span>지명·시각·대피소 = 데이터 주입</span></div>
+                <div class="chipset"><span class="c">📍대피소 자동첨부 · 원곡초</span><span class="c">유형: 호우</span></div>
+              </div>
+              <div class="card">
+                <div class="h">다국어·음성 미리보기 <span class="pill ok">20개 언어</span></div>
+                <div class="prev">
+                  <div class="p"><div class="l"><span>РУССКИЙ · 러시아어</span><span>고려인 2.3만</span></div><div class="b">[г. Ансан] 15:00 — резкий подъём воды в р. Ансанчхон. Не подходите к реке и подземным переездам. Укрытие: нач. школа Вонгок.</div></div>
+                  <div class="p"><div class="l"><span>쉬운 한국어</span><span>고령·저시력</span></div><div class="b">비가 아주 많이 와요. 낮은 곳은 위험해요. 지하차도와 하천 근처에 가지 마세요. 안전한 곳: 원곡초등학교.</div></div>
+                  <div class="p"><div class="l"><span>음성 안내(TTS)</span><span>0:12</span></div><div class="wave" id="wave"></div></div>
+                </div>
+                <div class="btn-row"><button class="btn">수정 요청</button><button class="btn go" style="margin-left:auto">담당자 승인 →</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </figure>
+
+    <!-- 4 범위·채널 -->
+    <figure class="shot rv">
+      <figcaption class="cap"><span class="step">STEP 4 · 표적</span><span class="nm">범위·채널 화면</span><span class="pp">노출인구·언어 구성 확인 후 발송 범위와 채널 확정</span></figcaption>
+      <div class="app">
+        <div class="app-bar"><span class="dots"><i></i><i></i><i></i></span><span class="addr">console.siren.ansan.go.kr / target</span><span class="live">범위 산정 완료</span></div>
+        <div class="app-body">
+          <nav class="rail"><span class="logo"></span>
+            <a><span class="ic">🛰️</span>상황판</a><a><span class="ic">🔎</span>검증</a><a><span class="ic">✍️</span>작성</a><a class="on"><span class="ic">🎯</span>표적</a><a><span class="ic">📈</span>결과</a>
+          </nav>
+          <div class="scr">
+            <div class="scr-top"><span class="ttl">발송 범위 — 원곡동 · 선부동</span><span class="rd">14:03 기준 시간대 유동인구 반영</span></div>
+            <div class="split" style="grid-template-columns:1.4fr 1fr">
+              <div class="mapwrap"><canvas class="hex" data-mode="target"></canvas>
+                <div class="mapleg"><span><span class="sw" style="background:var(--reach)"></span>발송 대상</span><span><span class="sw" style="background:var(--faint)"></span>제외</span></div>
+              </div>
+              <div>
+                <div class="card" style="margin-bottom:12px">
+                  <div class="h">노출 인구</div>
+                  <div class="big">12,400<small>명</small></div>
+                  <div class="langbar"><i style="width:65%;background:var(--faint)"></i><i style="width:23%;background:var(--amber)"></i><i style="width:7%;background:var(--reach)"></i><i style="width:5%;background:var(--line-2)"></i></div>
+                  <div class="langkey">
+                    <div class="lr"><span class="d" style="background:var(--faint)"></span><span class="nm">한국어</span><span class="vv">8,100</span></div>
+                    <div class="lr"><span class="d" style="background:var(--amber)"></span><span class="nm">러시아어</span><span class="vv">2,900</span></div>
+                    <div class="lr"><span class="d" style="background:var(--reach)"></span><span class="nm">중국어</span><span class="vv">900</span></div>
+                    <div class="lr"><span class="d" style="background:var(--line-2)"></span><span class="nm">기타</span><span class="vv">500</span></div>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="h">전파 채널 점검</div>
+                  <div class="checks">
+                    <div class="ck"><span class="bx">✓</span>긴급재난문자(CBS)<span class="mono">전역</span></div>
+                    <div class="ck"><span class="bx">✓</span>도로전광판<span class="mono">VMS 3기</span></div>
+                    <div class="ck"><span class="bx">✓</span>버스정류소<span class="mono">12개소</span></div>
+                    <div class="ck"><span class="bx">✓</span>동네 상점망<span class="mono">18개소</span></div>
+                    <div class="ck"><span class="bx">✓</span>다국어 챗봇<span class="mono">구독 4,200</span></div>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </figure>
+
+    <!-- 5 결과 -->
+    <figure class="shot rv">
+      <figcaption class="cap"><span class="step">STEP 5 · 도달확인</span><span class="nm">결과 화면</span><span class="pp">도달률·도달시간 측정과 공백 지도, 다음 발송 개선안</span></figcaption>
+      <div class="app">
+        <div class="app-bar"><span class="dots"><i></i><i></i><i></i></span><span class="addr">console.siren.ansan.go.kr / result</span><span class="live">송출 완료 · 측정중</span></div>
+        <div class="app-body">
+          <nav class="rail"><span class="logo"></span>
+            <a><span class="ic">🛰️</span>상황판</a><a><span class="ic">🔎</span>검증</a><a><span class="ic">✍️</span>작성</a><a><span class="ic">🎯</span>표적</a><a class="on"><span class="ic">📈</span>결과</a>
+          </nav>
+          <div class="scr">
+            <div class="scr-top"><span class="ttl">발령 결과 — #A-2231</span><span class="rd">발령 14:03:12 · 측정 갱신 14:07</span></div>
+            <div class="split" style="grid-template-columns:1fr 1.25fr">
+              <div class="card">
+                <div class="h">성과 지표</div>
+                <div class="kpi"><div class="k"><div class="l">TTR 도달시간</div><div class="v g">4분 32초</div></div></div>
+                <div class="gauge"><div class="ring" style="--v:96;--c:var(--reach)"><span class="v">96<small>%</small></span></div>
+                  <div class="gl"><b>도달률 93% → 96%</b>1차 송출 후 미도달 골목 재송출로 3%p 상승</div>
+                </div>
+              </div>
+              <div class="card">
+                <div class="h">언어·지역 공백 지도</div>
+                <div class="mapwrap" style="min-height:190px"><canvas class="hex" data-mode="gap"></canvas>
+                  <div class="mapleg"><span><span class="sw" style="background:var(--reach)"></span>도달</span><span><span class="sw" style="background:var(--amber)"></span>부분</span><span><span class="sw" style="background:var(--crit)"></span>공백</span></div>
+                </div>
+                <div class="impr" style="margin-top:12px"><span class="ic">↗</span><span><b>개선 제안</b> — 선부동 ○○길 러시아어 상점 노드 2개소 추가 시 해당 골목 도달률 +2%p 예측</span></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </figure>
+
+    <div class="sect-label"><span class="k">CITIZEN</span><h2>시민 수신 화면 — 3</h2></div>
+
+    <div class="phones rv">
+      <div>
+        <div class="ph"><span class="notch"></span>
+          <div class="status"><span>14:03</span><span>📶 🔋</span></div>
+          <div class="noti"><div class="top"><span class="app-ic">📨</span><span class="who">안산시 긴급재난문자<small>CBS · 국문</small></span><span class="now">지금</span></div>
+            <div class="msg">[안산시] 오늘 15시 안산천 수위 급상승, 원곡동·선부동 저지대 침수 위험. 지하차도·하천변 접근을 금지합니다. 차량은 우회하세요. 가까운 대피소는 원곡초등학교, 선부고등학교입니다. 거동이 불편한 이웃과 함께 대피하세요. ☎031-481-2000</div>
+          </div>
+          <div class="phcap">140자 · 대피소 자동첨부</div>
+        </div>
+        <div class="phlabel"><b>국문</b> · 재난문자</div>
+      </div>
+      <div>
+        <div class="ph"><span class="notch"></span>
+          <div class="status"><span>15:00</span><span>📶 🔋</span></div>
+          <div class="noti ru"><div class="top"><span class="app-ic">🏪</span><span class="who">Ансан · Оповещение<small>상점 알림망 · Русский</small></span><span class="now">now</span></div>
+            <div class="msg">[г. Ансан] 15:00 — резкий подъём воды в реке Ансанчхон. Риск подтопления в Вонгок-дон и Сонбу-дон. Не подходите к реке и подземным переездам. Укрытие: нач. школа Вонгок. ☎031-481-2000</div>
+          </div>
+          <div class="phcap">고려인 2.3만 · AI 생성 표시</div>
+        </div>
+        <div class="phlabel"><b>러시아어</b> · 동네 상점망</div>
+      </div>
+      <div>
+        <div class="ph"><span class="notch"></span>
+          <div class="status"><span>15:00</span><span>📶 🔋</span></div>
+          <div class="noti easy"><div class="top"><span class="app-ic">💬</span><span class="who">안산 안전 챗봇<small>쉬운 한국어 · 음성</small></span><span class="now">지금</span></div>
+            <div class="msg">비가 아주 많이 와요. 안산천 물이 넘칠 수 있어요. 원곡동, 선부동 낮은 곳은 위험해요. 지하차도와 하천 근처에 가지 마세요. 안전한 곳: 원곡초등학교. ☎031-481-2000</div>
+          </div>
+          <div class="phcap">고령·저시력 · TTS 병행</div>
+        </div>
+        <div class="phlabel"><b>쉬운 한국어</b> · 챗봇·지원본부</div>
+      </div>
+    </div>
+
+    <div class="foot">
+      <span>모두의 사이렌 — 재난문자의 ‘발송’을 ‘도달’로 바꾸는 AI 안전도시, 안산</span>
+      <span class="mono">화면은 기획 설명용 시안 · 실제 데이터 연동 전제</span>
+    </div>
+  </div>
+</div>
+
+<script>
+(function(){
+  var reduce = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  function css(v){ return getComputedStyle(document.documentElement).getPropertyValue(v).trim(); }
+
+  /* reveal */
+  var io=new IntersectionObserver(function(es){es.forEach(function(e){if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target);}});},{threshold:.12});
+  document.querySelectorAll('.rv').forEach(function(el){io.observe(el);});
+
+  /* wave bars */
+  var wave=document.getElementById('wave');
+  if(wave){ for(var i=0;i<34;i++){ var b=document.createElement('i'); var h=8+Math.round(Math.abs(Math.sin(i*0.7))*18 + (i%3)*3); b.style.height=h+'px'; wave.appendChild(b);} }
+
+  /* cctv faux scene */
+  document.querySelectorAll('[data-cctv]').forEach(function(cv){
+    function paint(){
+      var r=cv.getBoundingClientRect(); var dpr=Math.min(devicePixelRatio||1,2);
+      cv.width=r.width*dpr; cv.height=r.height*dpr; var x=cv.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
+      var W=r.width,H=r.height;
+      var g=x.createLinearGradient(0,0,0,H); g.addColorStop(0,'#16232f'); g.addColorStop(1,'#0a1119'); x.fillStyle=g; x.fillRect(0,0,W,H);
+      // river band
+      x.fillStyle='#20405a'; x.beginPath(); x.moveTo(0,H*0.62); x.lineTo(W,H*0.5); x.lineTo(W,H*0.78); x.lineTo(0,H*0.86); x.fill();
+      x.strokeStyle='#3a6f8f'; x.globalAlpha=.5; for(var i=0;i<5;i++){x.beginPath();x.moveTo(0,H*(0.64+i*0.04));x.lineTo(W,H*(0.52+i*0.045));x.stroke();} x.globalAlpha=1;
+      // bridge
+      x.strokeStyle='#4a5b6b'; x.lineWidth=3; x.beginPath(); x.moveTo(W*0.1,H*0.44); x.lineTo(W*0.92,H*0.34); x.stroke();
+      x.fillStyle='#2b3a49'; for(var p=0;p<5;p++){var px=W*(0.15+p*0.18);x.fillRect(px,H*0.4-(p*2),5,H*0.3);}
+      // scanline
+      x.fillStyle='#000'; x.globalAlpha=.06; for(var s=0;s<H;s+=3){x.fillRect(0,s,W,1);} x.globalAlpha=1;
+    }
+    paint(); window.addEventListener('resize',function(){clearTimeout(cv._t);cv._t=setTimeout(paint,150);});
+  });
+
+  /* hex map */
+  function hexmap(cv){
+    var mode=cv.getAttribute('data-mode');
+    function paint(){
+      var r=cv.getBoundingClientRect(); if(r.width<2)return;
+      var dpr=Math.min(devicePixelRatio||1,2); cv.width=r.width*dpr; cv.height=r.height*dpr;
+      var x=cv.getContext('2d'); x.setTransform(dpr,0,0,dpr,0,0);
+      var W=r.width,H=r.height;
+      var crit=css('--crit'),amber=css('--amber'),reach=css('--reach'),faint=css('--faint'),line=css('--line'),panel=css('--panel-3');
+      x.fillStyle=panel; x.fillRect(0,0,W,H);
+      var R=Math.max(15,Math.min(24,W/16)); // hex radius
+      var hw=Math.sqrt(3)*R, vh=1.5*R;
+      var src={x:W*0.34,y:H*0.52};
+      function hex(cx,cy,rad,fill,a,stroke){
+        x.beginPath();
+        for(var i=0;i<6;i++){var ang=Math.PI/180*(60*i-30);var px=cx+rad*Math.cos(ang),py=cy+rad*Math.sin(ang);i?x.lineTo(px,py):x.moveTo(px,py);}
+        x.closePath(); x.globalAlpha=a; x.fillStyle=fill; x.fill();
+        if(stroke){x.globalAlpha=Math.min(1,a+0.3);x.strokeStyle=stroke;x.lineWidth=1;x.stroke();}
+        x.globalAlpha=1;
+      }
+      var col=0;
+      for(var cy=vh*0.4; cy<H+R; cy+=vh){
+        var off=(col%2)?hw/2:0; col++;
+        for(var cx=hw*0.4+off; cx<W+R; cx+=hw){
+          var d=Math.hypot(cx-src.x,cy-src.y)/Math.max(W,H);
+          var fill=faint,a=0.14,stroke=null;
+          if(mode==='risk'){
+            if(d<0.14){fill=crit;a=0.85;} else if(d<0.24){fill=crit;a=0.5;} else if(d<0.36){fill=amber;a=0.4;} else {fill=faint;a=0.12;}
+          } else if(mode==='target'){
+            if(d<0.28){fill=reach;a=0.55;stroke=reach;} else {fill=faint;a=0.12;}
+          } else if(mode==='gap'){
+            if(d<0.3){ var k=(Math.sin(cx*0.9)+Math.cos(cy*1.3)); fill = k<-1.1?crit:(k<-0.2?amber:reach); a=fill===reach?0.6:(fill===amber?0.55:0.7); }
+            else {fill=reach;a=0.5;}
+          }
+          hex(cx,cy,R-1.5,fill,a,stroke);
+        }
+      }
+      // source marker
+      x.beginPath();x.arc(src.x,src.y,5,0,Math.PI*2);x.fillStyle=mode==='risk'?crit:reach;x.fill();
+      x.globalAlpha=.2;x.beginPath();x.arc(src.x,src.y,12,0,Math.PI*2);x.fill();x.globalAlpha=1;
+    }
+    paint(); window.addEventListener('resize',function(){clearTimeout(cv._t);cv._t=setTimeout(paint,150);});
+    var mm=window.matchMedia('(prefers-color-scheme: dark)'); if(mm.addEventListener)mm.addEventListener('change',paint);
+    // add dong tags for risk/target
+    if(mode==='risk'||mode==='target'){
+      var w=cv.parentElement;
+      var t1=document.createElement('span');t1.className='tag';t1.textContent='원곡동';t1.style.left='30%';t1.style.top='44%';
+      var t2=document.createElement('span');t2.className='tag';t2.textContent='선부동';t2.style.left='40%';t2.style.top='60%';
+      w.appendChild(t1);w.appendChild(t2);
+    }
+  }
+  document.querySelectorAll('canvas.hex').forEach(hexmap);
+})();
+</script>
